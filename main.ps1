@@ -14,7 +14,7 @@ $label.Size = New-Object System.Drawing.Size(460, 60)
 $label.Text = "Select the UWP app or feature you want to uninstall, or click the 'Uninstall All' button to uninstall all UWP apps and features."
 $form.Controls.Add($label)
 
-$listBox = New-Object System.Windows.Forms.ListBox
+$listBox = New-Object System.Windows.Forms.CheckedListBox
 $listBox.Location = New-Object System.Drawing.Point(20, 80)
 $listBox.Size = New-Object System.Drawing.Size(460, 150)
 $form.Controls.Add($listBox)
@@ -29,14 +29,16 @@ $button.Location = New-Object System.Drawing.Point(20, 240)
 $button.Size = New-Object System.Drawing.Size(150, 30)
 $button.Text = "Uninstall Selected"
 $button.Add_Click({
-    $selectedItem = $listBox.SelectedItem
-    if ($selectedItem) {
-        $result = [System.Windows.Forms.MessageBox]::Show("Are you sure you want to uninstall $selectedItem?", "Confirm Uninstall", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
-        if ($result -eq [System.Windows.Forms.DialogResult]::Yes) {
-            Write-Host "Uninstalling $selectedItem..."
-            Get-AppxPackage $selectedItem -AllUsers | Remove-AppxPackage -AllUsers
-            [void] $listBox.Items.Remove($selectedItem)
-            Write-Host "$selectedItem has been uninstalled."
+    $selectedItems = $listBox.CheckedItems
+    if ($selectedItems) {
+        foreach ($selectedItem in $selectedItems) {
+            $result = [System.Windows.Forms.MessageBox]::Show("Are you sure you want to uninstall $selectedItem?", "Confirm Uninstall", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
+            if ($result -eq [System.Windows.Forms.DialogResult]::Yes) {
+                Write-Host "Uninstalling $selectedItem..."
+                Get-AppxPackage $selectedItem -AllUsers | Remove-AppxPackage -AllUsers
+                [void] $listBox.Items.Remove($selectedItem)
+                Write-Host "$selectedItem has been uninstalled."
+            }
         }
     }
 })
@@ -58,4 +60,4 @@ $buttonAll.Add_Click({
 $form.Controls.Add($buttonAll)
 
 $form.ShowDialog() | Out-Null
-$form.ShowDialog() | Out-Null
+
