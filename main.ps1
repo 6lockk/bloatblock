@@ -2,7 +2,7 @@ Add-Type -AssemblyName System.Windows.Forms
 
 $form = New-Object System.Windows.Forms.Form
 $form.Text = "Uninstall UWP Apps and Features"
-$form.Size = New-Object System.Drawing.Size(500, 300)
+$form.Size = New-Object System.Drawing.Size(510, 330)
 $form.StartPosition = "CenterScreen"
 $form.FormBorderStyle = "FixedDialog"
 $form.MaximizeBox = $false
@@ -57,4 +57,5 @@ $buttonAll.Add_Click({
 })
 $form.Controls.Add($buttonAll)
 
+$form.ShowDialog() | Out-Null
 $form.ShowDialog() | Out-Null
